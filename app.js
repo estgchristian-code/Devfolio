@@ -11,7 +11,7 @@ const GITHUB_CONFIG = {
     user: GITHUB_USER,
     apiBase: 'https://api.github.com',
     perPage: 100,
-    maxProjects: 9,
+    maxProjects: 10,
     cacheKey: 'portfolio:github:v1',
     cacheVersion: 1,
     ttl: 30 * 60 * 1000,            // dado considerado fresco por 30 minutos
@@ -19,7 +19,7 @@ const GITHUB_CONFIG = {
     requestTimeout: 8000,            // aborta requisições travadas
     // Curadoria manual: nomes de repositórios em minúsculas.
     // Edite esta lista para destacar outros projetos do perfil.
-    featuredRepos: ['site-confeitaria', 'site-advocacia'],
+    featuredRepos: ['site-confeitaria', 'site-advocacia', 'devfolio'],
     // Topics que promovem o repositório a destaque.
     featuredTopics: ['featured', 'destaque', 'portfolio'],
     // Repositórios que nunca aparecem no portfólio.
@@ -87,6 +87,29 @@ const fallbackRepos = [
         relevance: 0
     }
 ];
+
+/* Card manual: aparece independentemente da API e do cache. */
+const manualRepos = [
+    {
+        id: 'manual-devfolio',
+        name: 'Devfolio',
+        description: 'Portfólio pessoal para apresentação de projetos e experiências em desenvolvimento web.',
+        language: 'HTML',
+        topics: [],
+        stars: 0,
+        url: 'https://github.com/estgchristian-code/Devfolio',
+        homepage: '',
+        pushedAt: '2026-11-23T12:52:46Z',
+        updatedAt: '2026-11-23T12:52:06Z',
+        relevance: 0
+    }
+];
+
+function mergeManualRepos(repos) {
+    const manualNames = new Set(manualRepos.map((repo) => repo.name.toLowerCase()));
+    const withoutDuplicates = repos.filter((repo) => !manualNames.has((repo.name || '').toLowerCase()));
+    return [...manualRepos, ...withoutDuplicates];
+}
 
 let allRepos = [...fallbackRepos];
 let activeFilter = 'all';
@@ -283,7 +306,9 @@ function curateRepos(rawRepos) {
         .filter((repo) => {
             if (!repo.name || !repo.url) return false;
             if (repo.fork || repo.archived || repo.disabled || repo.isTemplate) return false;
-            if (repo.size === 0) return false;
+            // Um repositório com atividade (pushed_at) não é vazio, mesmo que o
+            // size ainda seja 0 por atraso na indexação do GitHub.
+            if (repo.size === 0 && !repo.pushedAt) return false;
             if (GITHUB_CONFIG.blockedPattern.test(repo.name)) return false;
             return true;
         });
@@ -387,6 +412,8 @@ function renderRepoCard(repo) {
 function renderProjects() {
     const grid = document.getElementById('projects-grid');
     if (!grid) return;
+
+    allRepos = mergeManualRepos(allRepos);
 
     const filtered = getFilteredRepos();
 
