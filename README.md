@@ -68,3 +68,7 @@ Devfolio/
 ---
 
 Desenvolvido por Christian Bodziack Dainez.
+
+## Contribuições
+
+![Snake animation](https://raw.githubusercontent.com/estgchristian-code/estgchristian-code/output/github-contribution-grid-snake.svg)
