@@ -1,0 +1,31 @@
+/* Custom Scrollbar estilo IDE */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0d12;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #232c3d;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Grid Background sutil */
+.bg-grid-pattern {
+    background-size: 32px 32px;
+    background-image:
+        linear-gradient(to right, rgba(35, 44, 61, 0.35) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(35, 44, 61, 0.35) 1px, transparent 1px);
+}
+
+/* Efeito Glow sutil */
+.glow-cyan {
+    box-shadow: 0 0 25px -5px rgba(0, 229, 255, 0.15);
+}
